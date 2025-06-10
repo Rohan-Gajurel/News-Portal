@@ -81,9 +81,9 @@ class CommentView(View):
             comment = form.save(commit=False)
             comment.user = request.user
             comment.save()
-            return redirect("post_detail", pk=post_id)
+            return redirect("post-detail", pk=post_id)
         else:
-            post = Post.objects.get(Post, pk=post_id)
+            post = Post.objects.get(pk=post_id)
             popular_posts = Post.objects.filter(
                 published_at__isnull=False, status="active"
             ).order_by("-published_at")[:5]
