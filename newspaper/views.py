@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from newspaper.models import Post, Advertisment, Category, Tag
-from django.views.generic import ListView, DetailView, View
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
+from newspaper.models import Post, Advertisment, Category, Tag, Contact
+from django.views.generic import ListView, DetailView, View, CreateView
 from django.utils import timezone
 from datetime import timedelta
-from newspaper.forms import CommentForm
+from newspaper.forms import CommentForm, ContactForm, NewsLetterForm
 # Create your views here.
 class SidebarMixin:
     def get_context_data(self, **kwargs):
@@ -118,3 +121,58 @@ class TagListView(ListView):
     model= Tag
     template_name="newsportal/tag.html"
     context_object_name="tags"
+
+class PostByTagView(SidebarMixin, ListView):
+    model=Post
+    template_name="newsportal/list/list.html"
+    context_object_name="posts"
+    paginate_by=1
+
+    def get_queryset(self):
+        query=super().get_queryset()
+        tag_id = self.kwargs.get("tag_id")
+        query=query.filter(
+            published_at__isnull=False, status="active", tag__id=tag_id
+        ).order_by("-published_at")
+        return query
+    
+class ContactView(SuccessMessageMixin, CreateView):
+    model=Contact
+    template_name="newsportal/contact.html"
+    form_class=ContactForm
+    success_url = reverse_lazy("contact")
+    success_message = "Your message has been sent successfully!"
+
+class AboutView(View):
+    template_name = "newsportal/about.html"
+    context_object_name = "about"
+
+class NewsLetterView(View):
+    def post(self, request):
+        is_ajax = request.headers.get("x-requested-with")
+        if is_ajax=="XMLHttpRequest":
+            form= NewsLetterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse(
+                    {
+                "success": True,
+                "message": "You have successfully subscribed to the newsletter.",
+            } ,
+            status=201,
+                )
+            else:
+                return JsonResponse({
+                "success": False,
+                "message": "Cannot suscribe to the newsletter.",
+            }, 
+            status=400)
+        else:
+            return JsonResponse(
+                {
+                "success": False,
+                "message": "Cannot process. Must be an AJAX XMLHttpRequest.",
+                },
+                status=400
+            )
+

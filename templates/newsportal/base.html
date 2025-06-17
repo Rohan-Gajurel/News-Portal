@@ -27,7 +27,27 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
     <!-- Custom JS -->
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      $("#newsletter_side_form").submit(function(e){
+        e.preventDefault()
+        let serializedData = $(this).serialize();
+        $.ajax({
+          type: "POST",
+          url: "{% url 'newsletter' %}",
+          data: serializedData,
+          success: function(response) {
+            console.log(response);
+          },
+
+          error:function(response) {
+            console.log("Faluire", response);
+            
+          }
+        })
+      })
+    </script>
   </body>
 </html>
