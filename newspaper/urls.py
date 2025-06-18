@@ -13,4 +13,5 @@ urlpatterns = [
     path("contact/", views.ContactView.as_view(), name="contact"),
     path("about/", views.AboutView.as_view(), name="about"),
     path("newsletter/", views.NewsLetterView.as_view(), name="newsletter"),
+    path("search/", views.PostSearchView.as_view(), name="search"),
 ]
