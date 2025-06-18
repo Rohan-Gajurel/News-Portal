@@ -7,6 +7,10 @@ from django.views.generic import ListView, DetailView, View, CreateView
 from django.utils import timezone
 from datetime import timedelta
 from newspaper.forms import CommentForm, ContactForm, NewsLetterForm
+from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger
+
+
 # Create your views here.
 class SidebarMixin:
     def get_context_data(self, **kwargs):
@@ -175,4 +179,5 @@ class NewsLetterView(View):
                 },
                 status=400
             )
+
 
