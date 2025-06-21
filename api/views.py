@@ -3,7 +3,6 @@ from rest_framework import  permissions, viewsets
 from api.serializers import PostSerializer, UserSerializer, GroupSerializer, TagSerializer, CategorySerializer
 from newspaper.models import Post, Tag, Category
 from rest_framework.generics import ListAPIView
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset=User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
