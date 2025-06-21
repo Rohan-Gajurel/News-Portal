@@ -53,8 +53,6 @@ class PostViewSet(viewsets.ModelViewSet):
         
         return super().get_permissions()
     
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
 class PostListByCategory(ListAPIView):
     queryset=Post.objects.all()

@@ -44,7 +44,7 @@ class PostSerializer(serializers.ModelSerializer):
             "published_at":{"read_only":True},
         }
 
-        def validate(self, data):
+    def validate(self, data):
             data["author"]=self.context["request"].user
             return data
         
