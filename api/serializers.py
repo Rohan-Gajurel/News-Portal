@@ -29,7 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "content",
-            "featured_imade",
+            "featured_image",
             "status",
             "tag",
             "category",
@@ -47,3 +47,5 @@ class PostSerializer(serializers.ModelSerializer):
         def validate(self, data):
             data["author"]=self.context["request"].user
             return data
+        
+        

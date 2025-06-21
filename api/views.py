@@ -1,10 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import  permissions, viewsets
-
 from api.serializers import PostSerializer, UserSerializer, GroupSerializer, TagSerializer, CategorySerializer
 from newspaper.models import Post, Tag, Category
-
-
+from rest_framework.generics import ListAPIView
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset=User.objects.all().order_by('-date_joined')
@@ -39,7 +37,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryser=Post.objects.all().order_by('-published_at')
+    queryset=Post.objects.all().order_by('-published_at')
     serializer_class=PostSerializer
     permission_classes=[permissions.IsAuthenticated]
 
@@ -55,3 +53,20 @@ class PostViewSet(viewsets.ModelViewSet):
             return [permissions.AllowAny()]
         
         return super().get_permissions()
+    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class PostListByCategory(ListAPIView):
+    queryset=Post.objects.all()
+    serializer_class=PostSerializer
+    permissions_classes=[permissions.AllowAny]
+
+    def get_querset(self):
+        queryset=super().get_queryset()
+        queryset=queryset.filter(
+            satus="active",
+            published_at__isnull=False,
+            category=self.kwargs["category_id"]
+        )
+        return queryset
