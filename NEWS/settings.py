@@ -142,3 +142,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+# 1. ALLOWED_HOSTS - MUST include your Railway domain
+ALLOWED_HOSTS = [
+    'news-portal.up.railway.app',
+    '.up.railway.app',  # Wildcard for all Railway domains
+    'localhost',
+    '127.0.0.1',
+]
+
+# 2. CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = [
+    'https://news-portal.up.railway.app',
+    'https://*.up.railway.app',
+]
+
+# 3. Static Files Configuration
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
